@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.util.Arrays;
 
 @Entity
+@Table(name="users")
 public class User {
 
     @Id
