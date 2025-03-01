@@ -6,4 +6,6 @@ import com.maharjanworks.ecommerce_api.dto.UserDto;
 public interface AuthService {
 
     public UserDto register(RegisterRequest request);
+
+    public UserDto  registerAdminAccount(RegisterRequest request);
 }

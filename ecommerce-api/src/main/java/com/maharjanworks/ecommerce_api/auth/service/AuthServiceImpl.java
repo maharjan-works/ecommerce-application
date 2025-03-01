@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService{
         user.setEmail(request.email());
         user.setUsername(request.username());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.CUSTOMER);
 
         var savedUser = userRepository.save(user);
 
@@ -52,8 +52,42 @@ public class AuthServiceImpl implements AuthService{
                 savedUser.getUsername(),
                 savedUser.getRole().name()
         );
+        return dto;
+    }
 
+
+    public UserDto  registerAdminAccount(RegisterRequest request){
+
+        Optional<User> optionalAdmin = userRepository.findByEmail(request.email());
+        if(optionalAdmin.isPresent()){
+            throw new EmailAlreadyExistsException("Email Already Exists. Try Different!");
+        }
+        Optional<User> optionalUsername = userRepository.findByUsername(request.username());
+        if (optionalAdmin.isPresent()){
+            throw new UsernameAlreadyExistsException("Username Already Exists. Try Different");
+        }
+
+        User user = new User();
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setEmail(request.email());
+        user.setUsername(request.username());
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setRole(Role.ADMIN);
+
+        User savedUser = userRepository.save(user);
+
+        UserDto dto = new UserDto(
+                savedUser.getId(),
+                savedUser.getFirstName(),
+                savedUser.getLastName(),
+                savedUser.getEmail(),
+                savedUser.getUsername(),
+                savedUser.getRole().name()
+        );
         return dto;
 
     }
+
+
 }
