@@ -1,13 +1,18 @@
 package com.maharjanworks.ecommerce_api.controller;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.maharjanworks.ecommerce_api.auth.service.AuthService;
 import com.maharjanworks.ecommerce_api.auth.utils.JwtUtils;
 import com.maharjanworks.ecommerce_api.dto.AuthRequest;
 import com.maharjanworks.ecommerce_api.dto.AuthResponse;
+import com.maharjanworks.ecommerce_api.dto.RegisterRequest;
+import com.maharjanworks.ecommerce_api.dto.UserDto;
 import com.maharjanworks.ecommerce_api.model.User;
 import com.maharjanworks.ecommerce_api.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,6 +42,9 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private AuthService authService;
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest){
         try{
@@ -59,8 +67,14 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(response);
-
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> register(@RequestBody RegisterRequest request){
+        return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
+    }
+
+
 
 
 

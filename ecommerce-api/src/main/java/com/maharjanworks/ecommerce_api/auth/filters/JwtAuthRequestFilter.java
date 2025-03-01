@@ -1,5 +1,6 @@
 package com.maharjanworks.ecommerce_api.auth.filters;
 
+import com.maharjanworks.ecommerce_api.auth.service.UserDetailsServiceImpl;
 import com.maharjanworks.ecommerce_api.auth.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,7 +39,7 @@ public class JwtAuthRequestFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userDetailsService.loadByUsername(username);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if(jwtUtils.isTokenValid(token,userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null);
