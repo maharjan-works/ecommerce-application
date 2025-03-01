@@ -3,11 +3,15 @@ package com.maharjanworks.ecommerce_api.auth.service;
 import com.maharjanworks.ecommerce_api.dto.RegisterRequest;
 import com.maharjanworks.ecommerce_api.dto.UserDto;
 import com.maharjanworks.ecommerce_api.enums.Role;
+import com.maharjanworks.ecommerce_api.exception.EmailAlreadyExistsException;
+import com.maharjanworks.ecommerce_api.exception.UsernameAlreadyExistsException;
 import com.maharjanworks.ecommerce_api.model.User;
 import com.maharjanworks.ecommerce_api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService{
@@ -19,6 +23,16 @@ public class AuthServiceImpl implements AuthService{
     private PasswordEncoder passwordEncoder;
 
     public UserDto register(RegisterRequest request){
+
+        Optional<User> optionalUserEmail = userRepository.findByEmail(request.email());
+        if (optionalUserEmail.isPresent()){
+            throw new EmailAlreadyExistsException("Email Already Exists, Try Different!");
+        }
+
+        Optional<User> optionalUsername = userRepository.findByUsername(request.username());
+        if(optionalUsername.isPresent()){
+            throw new UsernameAlreadyExistsException("Username Already Exists, Try Different!");
+        }
 
         User user = new User();
         user.setFirstName(request.firstName());
